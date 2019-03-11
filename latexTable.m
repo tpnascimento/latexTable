@@ -140,7 +140,7 @@ if ~isfield(input,'makeCompleteLatexDocument'),input.makeCompleteLatexDocument =
 
 % Enable and specify second caption, with supressed numbering
 if ~isfield(input,'EnableSecondCaption'),input.EnableSecondCaption = 0;end
-if ~isfield(input,'SecondCaption'), input.secondCaption = 'MySecondTableCaption';end
+if ~isfield(input,'secondCaption'), input.secondCaption = 'MySecondTableCaption';end
 
 % Specify placement of the caption (IEEE and Brazilian Standard (ABNT) require caption to be on top) 
 if ~isfield(input,'CaptionPlacement'),input.CaptionPlacement='bottom';end
