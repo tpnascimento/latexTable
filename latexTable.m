@@ -137,6 +137,15 @@ end
 if ~isfield(input,'tableCaption'),input.tableCaption = 'MyTableCaption';end
 if ~isfield(input,'tableLabel'),input.tableLabel = 'MyTableLabel';end
 if ~isfield(input,'makeCompleteLatexDocument'),input.makeCompleteLatexDocument = 0;end
+
+% Enable and specify second caption, with supressed numbering
+if ~isfield(input,'EnableSecondCaption'),input.EnableSecondCaption = 0;end
+if ~isfield(input,'SecondCaption'), input.secondCaption = 'MySecondTableCaption';end
+
+% Specify placement of the caption (IEEE and Brazilian Standard (ABNT) require caption to be on top) 
+if ~isfield(input,'CaptionPlacement'),input.CaptionPlacement='bottom';end
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % process table datatype
@@ -204,7 +213,14 @@ if input.tableBorders
 else
     header = ['\begin{tabular}','{',repmat(input.tableColumnAlignment,1,size(C,2)),'}'];
 end
-latex = {['\begin{table}',input.tablePlacement];'\centering';header};
+
+if strcmp(input.CaptionPlacement,'top')
+    latex = {['\begin{table}',input.tablePlacement];'\centering';['\caption{',input.tableCaption,'}'];header};
+elseif input.EnableSecondCaption
+    latex = {['\begin{table}',input.tablePlacement];'\centering';['\caption*{',input.secondCaption,'}'];header};
+else
+    latex = {['\begin{table}',input.tablePlacement];'\centering';header};
+end
 
 % generate table
 if input.booktabs
@@ -243,8 +259,15 @@ end
 
 
 % make footer lines for table:
-tableFooter = {'\end{tabular}';['\caption{',input.tableCaption,'}']; ...
-    ['\label{table:',input.tableLabel,'}'];'\end{table}'};
+if strcmp(input.CaptionPlacement,'bottom')
+    tableFooter = {'\end{tabular}';['\caption{',input.tableCaption,'}']; ...
+        ['\label{table:',input.tableLabel,'}'];'\end{table}'};
+elseif input.EnableSecondCaption
+    tableFooter = {'\end{tabular}';['\caption*{',input.secondCaption,'}']; ...
+        ['\label{table:',input.tableLabel,'}'];'\end{table}'};
+else
+    tableFooter = {'\end{tabular}';['\label{table:',input.tableLabel,'}'];'\end{table}'};
+end
 if input.tableBorders
     latex = [latex;{hLine};tableFooter];
 else
